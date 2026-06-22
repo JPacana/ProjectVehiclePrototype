@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 
 public class InventoryDrag : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
-    [SerializeField] private InventoryItem _inventoryItem;
-    public InventoryItem InventoryItem => _inventoryItem;
+    [SerializeField] private InventoryItemSO _inventoryItem;
+    public InventoryItemSO InventoryItem => _inventoryItem;
     
     private List<AttachmentSocket> _attachmentPoints;
 
@@ -15,9 +15,9 @@ public class InventoryDrag : MonoBehaviour, IPointerClickHandler, IPointerDownHa
     //public event Action PointerClick;
     //public event Action PointerUp;
 
-    public event Action<PointerEventData, InventoryItem> BeginDrag;
-    public event Action<PointerEventData, InventoryItem> Drag;
-    public event Action<PointerEventData, InventoryItem> EndDrag;
+    public event Action<PointerEventData, InventoryItemSO> BeginDrag;
+    public event Action<PointerEventData, InventoryItemSO> Drag;
+    public event Action<PointerEventData, InventoryItemSO> EndDrag;
 
     public void OnPointerDown(PointerEventData eventData)
     {

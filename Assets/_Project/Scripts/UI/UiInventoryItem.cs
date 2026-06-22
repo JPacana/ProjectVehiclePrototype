@@ -8,11 +8,11 @@ public class UiInventoryItem : MonoBehaviour, IDragHandler, IBeginDragHandler, I
     [SerializeField] private Image _image;
     public Image Image => _image;
     
-    public InventoryItem Item { get; set; }
+    public InventoryItemSO Item { get; set; }
     
-    public event Action<PointerEventData, InventoryItem> BeginDrag;
-    public event Action<PointerEventData, InventoryItem> Drag;
-    public event Action<PointerEventData, InventoryItem> EndDrag;
+    public event Action<PointerEventData, InventoryItemSO> BeginDrag;
+    public event Action<PointerEventData, InventoryItemSO> Drag;
+    public event Action<PointerEventData, InventoryItemSO> EndDrag;
     
     public void OnBeginDrag(PointerEventData eventData)
     {

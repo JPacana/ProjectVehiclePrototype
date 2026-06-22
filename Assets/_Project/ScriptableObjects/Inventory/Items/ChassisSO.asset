@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa864d1713cae0640a3cef55239e1ec3, type: 3}
-  m_Name: Booster
+  m_Name: ChassisSO
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
-  Sprite: {fileID: 21300000, guid: f9bc1b702e481d74c897c49a2fdab162, type: 3}
-  VehicleAttachment: {fileID: 984306621536489752, guid: 93dc1171d6c9b2649b1fd9f0f4dbc1d2, type: 3}
+  Sprite: {fileID: 21300000, guid: f18acc22062d9b54db2e693cec151cd5, type: 3}
+  VehicleAttachment: {fileID: 484841077840958015, guid: a58183481bb945d4ab661dbbafc648ec, type: 3}
+  VehicleAttachmentPreview: {fileID: 3432556059883506516, guid: a0f5e4913d460af4289d1108c71c9b58, type: 3}

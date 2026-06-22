@@ -24,7 +24,7 @@ public class InventoryPanel : MonoBehaviour
         }
     }
     
-    private void OnBeginDrag(PointerEventData eventData, InventoryItem obj)
+    private void OnBeginDrag(PointerEventData eventData, InventoryItemSO obj)
     {
         // Raycast from the camera to the mouse position
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
@@ -37,7 +37,7 @@ public class InventoryPanel : MonoBehaviour
         }
     }
 
-    private void OnDrag(PointerEventData eventData, InventoryItem obj)
+    private void OnDrag(PointerEventData eventData, InventoryItemSO obj)
     {
         // Raycast from the camera to the mouse position
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
@@ -50,7 +50,7 @@ public class InventoryPanel : MonoBehaviour
         }
     }
 
-    private void OnEndDrag(PointerEventData eventData, InventoryItem obj)
+    private void OnEndDrag(PointerEventData eventData, InventoryItemSO obj)
     {
         Ray ray = Camera.main.ScreenPointToRay(eventData.position);
         RaycastHit hit;

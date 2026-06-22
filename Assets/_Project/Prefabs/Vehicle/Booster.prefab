@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: 675aec33c6d92b746b318a78564ed77d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8087b40ad5c9840a54d9df9f767b05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachment
+  _terminal: 1
 --- !u!1 &6486425997879963259
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,7 +187,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: 1, y: 0, z: 0}
 --- !u!1 &7306912128544609689
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: -1, y: 0, z: 0}
 --- !u!1 &7436330736148013530
 GameObject:
   m_ObjectHideFlags: 0
