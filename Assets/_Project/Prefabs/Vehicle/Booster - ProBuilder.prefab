@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 2986852696230573929}
   - component: {fileID: 6800890696287085203}
   - component: {fileID: 1064984044777766166}
-  - component: {fileID: 8227116627669026263}
   m_Layer: 0
   m_Name: Booster - ProBuilder
   m_TagString: Untagged
@@ -1340,18 +1339,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhysicalProperties
   _mass: 0.1
   _centerOfMassOffset: {x: 0, y: 0, z: 0}
---- !u!114 &8227116627669026263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 984306621536489752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d8087b40ad5c9840a54d9df9f767b05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachment
 --- !u!1 &6486425997879963259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1396,7 +1383,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: 1, y: 0, z: 0}
 --- !u!1 &7306912128544609689
 GameObject:
   m_ObjectHideFlags: 0
@@ -1441,7 +1427,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: -1, y: 0, z: 0}
 --- !u!1 &7436330736148013530
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 5364579960150753336}
   - component: {fileID: 7462463350761459011}
   - component: {fileID: 8008605785693582235}
-  - component: {fileID: 4814702862058541002}
   - component: {fileID: 6745308252764461562}
   m_Layer: 0
   m_Name: Chassis Block
@@ -131,19 +130,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhysicalProperties
   _mass: 1
   _centerOfMassOffset: {x: 0, y: 0, z: 0}
---- !u!114 &4814702862058541002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 484841077840958015}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d8087b40ad5c9840a54d9df9f767b05, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachment
-  _terminal: 0
 --- !u!114 &6745308252764461562
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,8 +18,6 @@ public class VehicleBuilder : MonoBehaviour
     private GameObject _previewObject = null;
     
     private GameObject _previewGhostObject = null;
-    
-    private Dictionary<AttachmentSocket, VehicleAttachment> _attachmentSockets = new();
 
     void Awake()
     {
