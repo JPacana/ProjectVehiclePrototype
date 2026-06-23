@@ -33,7 +33,7 @@ public class InventoryPanel : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y, 0f);
-            _builder.Preview(obj, spawnPosition);
+            _builder.StartPreview(obj, spawnPosition);
         }
     }
 
@@ -46,7 +46,7 @@ public class InventoryPanel : MonoBehaviour
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, _builder.BuildSurfaceLayers))
         {
             Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y, 0f);
-            _builder.Preview(obj, spawnPosition);
+            _builder.UpdatePreview(obj, spawnPosition);
         }
     }
 
@@ -58,7 +58,8 @@ public class InventoryPanel : MonoBehaviour
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, _builder.BuildSurfaceLayers))
         {
             Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y, 0f);
-            _builder.PlaceAttachment(obj, spawnPosition);
+            //_builder.PlaceAttachment(obj, spawnPosition);
+            _builder.EndPreview(obj, spawnPosition);
         }
     }
 }

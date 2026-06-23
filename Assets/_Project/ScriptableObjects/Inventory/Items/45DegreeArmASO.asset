@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa864d1713cae0640a3cef55239e1ec3, type: 3}
+  m_Name: 45DegreeArmASO
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSO
+  Sprite: {fileID: 21300000, guid: f9bc1b702e481d74c897c49a2fdab162, type: 3}
+  VehicleAttachment: {fileID: 8456739685653224534, guid: c4bb980f78209f04c930eb52e5e527a9, type: 3}
+  VehicleAttachmentPreview: {fileID: 3991756036510629929, guid: a5814b962d0f2564aa14537798462624, type: 3}

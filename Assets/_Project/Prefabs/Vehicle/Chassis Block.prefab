@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7462463350761459011}
   - component: {fileID: 8008605785693582235}
   - component: {fileID: 4814702862058541002}
+  - component: {fileID: 6745308252764461562}
   m_Layer: 0
   m_Name: Chassis Block
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484841077840958015}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -142,6 +143,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8087b40ad5c9840a54d9df9f767b05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachment
+  _terminal: 0
+--- !u!114 &6745308252764461562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484841077840958015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89fca8f68925dfb40b5a75c7921b77aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleComponent
+  _sockets:
+  - {fileID: 792228214537873375}
+  - {fileID: 133000387309482105}
+  - {fileID: 5815328710606179864}
+  - {fileID: 5110424540347915669}
 --- !u!1 &2906888177371718234
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,13 +186,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2906888177371718234}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.70710677, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -0.25, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3197853809610807972}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!114 &5815328710606179864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +205,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: -1, y: 0, z: 0}
 --- !u!1 &3510296621040858078
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,13 +230,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3510296621040858078}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0.7071067, y: -0, z: -0, w: 0.70710695}
   m_LocalPosition: {x: 0, y: 0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3197853809610807972}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &792228214537873375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,7 +249,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: 0, y: 1, z: 0}
 --- !u!1 &3917041057473147449
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,13 +274,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3917041057473147449}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: 0.7071069}
   m_LocalPosition: {x: 0.25, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3197853809610807972}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &5110424540347915669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,7 +293,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: 1, y: 0, z: 0}
 --- !u!1 &4615837172061276247
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,13 +318,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4615837172061276247}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0.70710665, y: -0, z: -0, w: 0.70710695}
   m_LocalPosition: {x: 0, y: -0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3197853809610807972}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &133000387309482105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,7 +337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ab288bcccdd9b04ab633628e18371ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleAttachmentPoint
-  _normal: {x: 0, y: -1, z: 0}
 --- !u!1 &4794054042299667398
 GameObject:
   m_ObjectHideFlags: 0

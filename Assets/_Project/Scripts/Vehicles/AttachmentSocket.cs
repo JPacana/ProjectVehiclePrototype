@@ -3,6 +3,10 @@ using UnityEngine;
 
 public class AttachmentSocket : MonoBehaviour
 {
-    [CanBeNull] private VehicleAttachment _attachedComponent;
-    [CanBeNull] public VehicleAttachment AttachedComponent => _attachedComponent;
+    public Vector3 Forward => transform.forward;
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward);
+    }
 }
