@@ -1945,6 +1945,9 @@ MonoBehaviour:
   _buildSurfaceLayers:
     serializedVersion: 2
     m_Bits: 64
+  _buildSocketLayers:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &1612007850
 GameObject:
   m_ObjectHideFlags: 0
