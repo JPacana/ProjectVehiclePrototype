@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chassis Block Preview
       objectReference: {fileID: 0}
+    - target: {fileID: 2197351640442077667, guid: a58183481bb945d4ab661dbbafc648ec, type: 3}
+      propertyPath: m_Name
+      value: Cube Clearance Volume (Ghost)
+      objectReference: {fileID: 0}
     - target: {fileID: 4285805110772768357, guid: a58183481bb945d4ab661dbbafc648ec, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -63,5 +67,40 @@ PrefabInstance:
     - {fileID: 6745308252764461562, guid: a58183481bb945d4ab661dbbafc648ec, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2197351640442077667, guid: a58183481bb945d4ab661dbbafc648ec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7648142084638333386}
   m_SourcePrefab: {fileID: 100100000, guid: a58183481bb945d4ab661dbbafc648ec, type: 3}
+--- !u!1 &3992137897366968456 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2197351640442077667, guid: a58183481bb945d4ab661dbbafc648ec, type: 3}
+  m_PrefabInstance: {fileID: 2961226607202851179}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &7648142084638333386
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3992137897366968456}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

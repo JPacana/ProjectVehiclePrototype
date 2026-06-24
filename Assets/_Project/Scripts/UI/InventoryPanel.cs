@@ -26,28 +26,32 @@ public class InventoryPanel : MonoBehaviour
     
     private void OnBeginDrag(PointerEventData eventData, InventoryItemSO obj)
     {
+        //// Raycast from the camera to the mouse position
+        //Ray ray = Camera.main.ScreenPointToRay(eventData.position);
+        //RaycastHit hit;
+        //
+        //if (Physics.Raycast(ray, out hit))
+        //{
+        //    Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y, 0f);
+        //    _builder.StartPreview(obj, spawnPosition);
+        //}
         // Raycast from the camera to the mouse position
-        Ray ray = Camera.main.ScreenPointToRay(eventData.position);
-        RaycastHit hit;
         
-        if (Physics.Raycast(ray, out hit))
-        {
-            Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y, 0f);
-            _builder.StartPreview(obj, spawnPosition);
-        }
+        _builder.StartPreview(obj, eventData.position);
     }
 
     private void OnDrag(PointerEventData eventData, InventoryItemSO obj)
     {
-        // Raycast from the camera to the mouse position
-        Ray ray = Camera.main.ScreenPointToRay(eventData.position);
-        RaycastHit hit;
-        
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, _builder.BuildSurfaceLayers))
-        {
-            Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y, 0f);
-            _builder.UpdatePreview(obj, spawnPosition);
-        }
+        //// Raycast from the camera to the mouse position
+        //Ray ray = Camera.main.ScreenPointToRay(eventData.position);
+        //RaycastHit hit;
+        //
+        //if (Physics.Raycast(ray, out hit, Mathf.Infinity, _builder.BuildSurfaceLayers))
+        //{
+        //    Vector3 spawnPosition = new Vector3(hit.point.x, hit.point.y, 0f);
+        //    _builder.UpdatePreview(obj, spawnPosition);
+        //}
+        _builder.UpdatePreview(obj, eventData.position);
     }
 
     private void OnEndDrag(PointerEventData eventData, InventoryItemSO obj)

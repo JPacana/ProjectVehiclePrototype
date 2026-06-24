@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9029456481512547743, guid: d2f278e7e01a3d44d97b6b26d8eb5065, type: 3}
+      propertyPath: m_Name
+      value: Cube Clearance Volume (Ghost)
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8008605785693582235, guid: d2f278e7e01a3d44d97b6b26d8eb5065, type: 3}
     - {fileID: 7462463350761459011, guid: d2f278e7e01a3d44d97b6b26d8eb5065, type: 3}
@@ -63,5 +67,40 @@ PrefabInstance:
     - {fileID: 3931743344664371743, guid: d2f278e7e01a3d44d97b6b26d8eb5065, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9029456481512547743, guid: d2f278e7e01a3d44d97b6b26d8eb5065, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4117929330330844378}
   m_SourcePrefab: {fileID: 100100000, guid: d2f278e7e01a3d44d97b6b26d8eb5065, type: 3}
+--- !u!1 &6243376041458949636 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9029456481512547743, guid: d2f278e7e01a3d44d97b6b26d8eb5065, type: 3}
+  m_PrefabInstance: {fileID: 3164904338044697499}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &4117929330330844378
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243376041458949636}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

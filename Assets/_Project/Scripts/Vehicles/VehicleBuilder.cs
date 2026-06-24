@@ -1,10 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class VehicleBuilder : MonoBehaviour
 {
+    [SerializeField] private Plane _plane;
+
+    [SerializeField] private Camera _buildCamera;
+    
     [SerializeField] private VehicleBase _vehicleBase;
 
     [SerializeField] private InventorySO _initialInventory;
@@ -30,30 +35,6 @@ public class VehicleBuilder : MonoBehaviour
         _buildSocketColliders = new Collider[_maxBuildSocketColliders];
     }
     
-    //Vector3 ComputePlacement(Vector3 mouseWorldPos)
-    //{
-    //    // Search for nearby connection sockets
-    //    float snapRadius = 1f;
-    //    var numColliders = Physics.OverlapSphereNonAlloc(mouseWorldPos, snapRadius, _buildSocketColliders, _buildSocketLayers);
-
-    //    var closestSocketDistance = Mathf.Infinity;
-    //    Vector3 closestPoint = mouseWorldPos;
-    //    
-    //    for (int i = 0; i < numColliders; i++)
-    //    {
-    //        var dist = (mouseWorldPos - _buildSocketColliders[i].transform.position).sqrMagnitude;
-    //        if (dist >= closestSocketDistance) continue;
-    //        
-    //        // Ignore Build Sockets that are on the _previewObject
-    //        if (_buildSocketColliders[i].transform.IsChildOf(_previewObject.transform)) continue;
-    //        
-    //        closestSocketDistance = dist;
-    //        closestPoint = _buildSocketColliders[i].transform.position;
-    //    }
-    //
-    //    return closestPoint;
-    //}
-
     void SnapGhostToTarget(BuildSocket targetBuildSocket)
     {
         BuildSocket bestGhostBuildSocket = null;
@@ -120,17 +101,15 @@ public class VehicleBuilder : MonoBehaviour
     }
 
     private BuildSocket[] _ghostSockets;
-    public void StartPreview(InventoryItemSO item, Vector3 position)
+    private ClearanceVolume[] _ghostClearanceVolumes;
+    public void StartPreview(InventoryItemSO item, Vector2 mousePosition)
     {
-        // Create Preview object
         if (!_previewObject) _previewObject = Instantiate(item.VehicleAttachmentPreview);
-        
-        _previewObject.transform.position = position;
-        
         _ghostSockets = _previewObject.GetComponentsInChildren<BuildSocket>();
+        _ghostClearanceVolumes = _previewObject.GetComponentsInChildren<ClearanceVolume>();
     }
     
-    public void UpdatePreview(InventoryItemSO item, Vector3 position)
+    public void UpdatePreview(InventoryItemSO item, Vector2 mousePosition)
     {
         if (!_vehicleBase.RootComponent)
         {
@@ -138,22 +117,39 @@ public class VehicleBuilder : MonoBehaviour
         }
         else
         {
-            BuildSocket targetBuildSocket = GetClosestAvailableWorldSocket(position);
-            if (targetBuildSocket)
+            // Raycast from the camera to the mouse position
+            Ray ray = _buildCamera.ScreenPointToRay(mousePosition);
+            RaycastHit hit;
+
+            _previewObject.transform.rotation = Quaternion.identity;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _buildSurfaceLayers))
             {
-                SnapGhostToTarget(targetBuildSocket);
+                BuildSocket targetBuildSocket = GetClosestAvailableWorldSocket(hit.point);
+                if (targetBuildSocket)
+                {
+                    SnapGhostToTarget(targetBuildSocket);
+                }
+                else
+                {
+                    _previewObject.transform.position = hit.point;
+                }
             }
-            else
+            
+            // Check for clearances
+            bool overlapsSomething = false;
+            for (int i = 0; i < _ghostClearanceVolumes.Length; i++)
             {
-                _previewObject.transform.position = position;
+                var overlappingClearanceVolumes = _ghostClearanceVolumes[i].OverlappedColliders
+                    .Where(c => c.gameObject.layer == LayerMask.NameToLayer("Clearance Volume")).ToList().Count;
+                if (overlappingClearanceVolumes > 0) overlapsSomething = true;
             }
+            //if (overlapsSomething) Debug.Log("UpdatePreview: Ghost is overlapping an object.");
         }
     }
-    
+
+    private ClearanceVolume[] _vehicleClearanceVolumes;
     public void EndPreview(InventoryItemSO item, Vector3 position)
     {
-        //Destroy(_previewObject.gameObject);
-        
         if (!_vehicleBase.RootComponent)
         {
             var spawnPosition = _vehicleBase.transform.position;
@@ -162,12 +158,36 @@ public class VehicleBuilder : MonoBehaviour
         }
         else
         {
-            var newBaseComponent = Instantiate(
-                item.VehicleAttachment, 
-                _previewObject.transform.position, 
-                _previewObject.transform.rotation, 
-                _vehicleBase.transform).GetComponent<VehicleComponent>();
+            // Check for clearances
+            bool overlapsSomething = false;
+            for (int i = 0; i < _ghostClearanceVolumes.Length; i++)
+            {
+                ////var overlappingClearanceVolumes = _ghostClearanceVolumes[i].OverlappedColliders
+                ////    .Where(c => c.gameObject.layer == LayerMask.GetMask("Clearance Volume")).ToList().Count;
+                //var overlappingClearanceVolumes = _ghostClearanceVolumes[i].OverlappedColliders
+                //    .Where(c => c.gameObject.layer == LayerMask.NameToLayer("Clearance Volume")).ToList().Count;
+                //if (overlappingClearanceVolumes > 0) overlapsSomething = true;
+                //overlapsSomething = _ghostClearanceVolumes[i].GetOverlappedClearanceVolumes().Length > 0;
+                var overlappedClearanceVolumes = _ghostClearanceVolumes[i].GetOverlappedClearanceVolumes();
+                if (overlappedClearanceVolumes.Length > 0) overlapsSomething = true;
+                foreach (var overlappedClearanceVolume in overlappedClearanceVolumes)
+                {
+                    Debug.Log($"Ghost Clearance Volume {i} is overlapping {overlappedClearanceVolume.name}");
+                }
+            }
+            //if (overlapsSomething) Debug.Log("EndPreview: Ghost is overlapping an object.");
+
+            if (!overlapsSomething)
+            {
+                var newBaseComponent = Instantiate(
+                    item.VehicleAttachment, 
+                    _previewObject.transform.position, 
+                    _previewObject.transform.rotation, 
+                    _vehicleBase.transform).GetComponent<VehicleComponent>();
+            }
         }
+        
+        _vehicleClearanceVolumes = _vehicleBase.GetComponentsInChildren<ClearanceVolume>();
         
         Destroy(_previewObject.gameObject);
     }
