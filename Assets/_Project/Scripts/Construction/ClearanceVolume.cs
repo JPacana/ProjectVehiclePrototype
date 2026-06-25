@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider))]
@@ -49,10 +50,25 @@ public class ClearanceVolume : MonoBehaviour
 
             // 4. Pass the parameters into the physics check
             //Collider[] hitColliders = Physics.OverlapBox(worldCenter, halfExtents, worldRotation, _clearanceVolumeLayerMask);
+            
             Collider[] hitColliders = Physics.OverlapBox(worldCenter, halfExtents, worldRotation, _clearanceVolumeLayerMask);
+
+            //// Works
+            //List<Collider> returnColliders = new();
+            //foreach (var hitCollider in hitColliders)
+            //{
+            //    Debug.Log($"{hitCollider.gameObject.name} (layer={hitCollider.gameObject.layer}) is overlapped by Clearance Volume on {targetBoxCollider.name} (layer={targetBoxCollider.gameObject.layer})");
+            //    Debug.Log($"{hitCollider.transform.name}.IsChildOf({targetBoxCollider.transform.parent.name})");
+            //    if (hitCollider.transform.IsChildOf(targetBoxCollider.transform.parent)) continue;
+            //    returnColliders.Add(hitCollider);
+            //}
+            //return returnColliders.ToArray();
+            
+            return hitColliders.Where(c => !c.transform.IsChildOf(targetBoxCollider.transform.parent)).ToArray();
             
             // TODO: Eliminate ClearanceVolumes that are either this volume or a sibling
-            return hitColliders.Where(c => c.transform.IsChildOf(targetBoxCollider.transform.parent)).ToArray();
+            //return hitColliders.Where(c => c.transform.IsChildOf(targetBoxCollider.transform.parent)).ToArray();
+            //return hitColliders.Where(c => c.transform.IsChildOf(targetBoxCollider.transform.parent)).ToArray();
             //Debug.Log($"Physics.OverlapBox({worldCenter}, {halfExtents}, {worldRotation}, {_clearanceVolumeLayerMask.value})");
             //return hitColliders;
             
