@@ -76,7 +76,8 @@ public class VehicleBuilder : MonoBehaviour
 
     private BuildSocket GetClosestAvailableWorldSocket(Vector3 mouseWorldPos)
     {
-        float snapRadius = 0.25f;
+        //float snapRadius = 0.25f;
+        float snapRadius = 0.7071f;
         var numColliders = Physics.OverlapSphereNonAlloc(mouseWorldPos, snapRadius, _buildSocketColliders, _buildSocketLayers);
         BuildSocket closestSocket = null;
         float bestDistance = Mathf.Infinity;
