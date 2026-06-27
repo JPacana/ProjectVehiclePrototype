@@ -13,10 +13,7 @@ MonoBehaviour:
   m_Name: SandboxInventorySO
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   Items:
-  - {fileID: 11400000, guid: 2e5df260d05398d4888f878296e53fcc, type: 2}
-  - {fileID: 11400000, guid: 604d945482cf0b644b10a8af767f4163, type: 2}
-  - {fileID: 11400000, guid: 3e3dee955949a3441985319c78068711, type: 2}
   - {fileID: 11400000, guid: d4f139893a87c3748adbfa7a529ab130, type: 2}
   - {fileID: 11400000, guid: d97751be255b23a4ba84752a9fcbeabc, type: 2}
   - {fileID: 11400000, guid: d8af705dc9223f74dbb0f026958b879b, type: 2}
-  Quantity: 0000000000000000000000000000000000000000
+  Quantity: 000000000000000000000000

@@ -10,8 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2570962606949566174}
   - component: {fileID: 2913552124133873644}
-  - component: {fileID: 3265677167763933974}
   - component: {fileID: 411212784580269514}
+  - component: {fileID: 8269425309977407650}
   m_Layer: 5
   m_Name: Inventory Item
   m_TagString: Untagged
@@ -46,7 +46,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4575704967211173372}
   m_CullTransparentMesh: 1
---- !u!114 &3265677167763933974
+--- !u!114 &411212784580269514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4575704967211173372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3464cf877d2d144dbd84fcad1ee1da0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UiInventoryItem
+  _image: {fileID: 8269425309977407650}
+--- !u!114 &8269425309977407650
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -76,16 +89,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &411212784580269514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4575704967211173372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3464cf877d2d144dbd84fcad1ee1da0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UiInventoryItem
-  _image: {fileID: 3265677167763933974}

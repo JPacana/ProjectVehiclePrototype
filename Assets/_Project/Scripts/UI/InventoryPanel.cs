@@ -15,7 +15,19 @@ public class InventoryPanel : MonoBehaviour
         foreach (var inventoryItem in _builder.Inventory)
         {
             var uiInventoryItem = Instantiate(_inventoryItemPrefab, _contentContainer).GetComponent<UiInventoryItem>();
+            
+            //// Trying to generate a thumbnail
+            //var thumbnailGenerator = FindAnyObjectByType<ThumbnailGenerator>();
+            //var thumbnail = thumbnailGenerator.Renderer.GetThumbnail(inventoryItem.Id);
+            //var thumbnailReady = !thumbnailGenerator.Renderer.IsPending(inventoryItem.Id);
+            //Debug.Log($"Item Id = {inventoryItem.Id} pending -> {thumbnailReady}");
+            ////var sprite = Sprite.Create(thumbnail, new Rect(0, 0, 1024, 1024), new Vector2(0.5f, 0.5f));
+            ////uiInventoryItem.Image.sprite = sprite;
+            //uiInventoryItem.Image.texture = thumbnail;
+            ////uiInventoryItem.Image.sprite = inventoryItem.Sprite;
+             
             uiInventoryItem.Image.sprite = inventoryItem.Sprite;
+            
             uiInventoryItem.Item = inventoryItem;
             
             uiInventoryItem.Drag += OnDrag;

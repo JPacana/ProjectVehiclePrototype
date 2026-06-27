@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa864d1713cae0640a3cef55239e1ec3, type: 3}
   m_Name: BoosterSO
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItem
+  Id: 6
+  Name: 
   Sprite: {fileID: 21300000, guid: f9bc1b702e481d74c897c49a2fdab162, type: 3}
   VehicleAttachment: {fileID: 984306621536489752, guid: 93dc1171d6c9b2649b1fd9f0f4dbc1d2, type: 3}
   VehicleAttachmentPreview: {fileID: 2127217978704657614, guid: 6d471951726150c41bfa2f37d154b589, type: 3}

@@ -1,0 +1,3 @@
+Unity Prefab Thumbnail Renderer
+https://github.com/sinanata/unity-prefab-thumbnail-renderer
+License: MIT

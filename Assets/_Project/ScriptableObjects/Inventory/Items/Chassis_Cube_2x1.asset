@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa864d1713cae0640a3cef55239e1ec3, type: 3}
   m_Name: Chassis_Cube_2x1
   m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSO
-  Sprite: {fileID: 21300000, guid: fafbd26aa2396a14d832972607e419d1, type: 3}
+  Id: 2
+  Name: Chassis_Cube_2x1
+  Sprite: {fileID: 21300000, guid: 10a09b1c9d51f7b4db8d485838e283d0, type: 3}
   VehicleAttachment: {fileID: 3646613032134145938, guid: 66400090bc80137459128dc978091efe, type: 3}
   VehicleAttachmentPreview: {fileID: 6621971328901813734, guid: 412f0dffa2676e145a59ee6945d5d007, type: 3}
