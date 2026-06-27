@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa864d1713cae0640a3cef55239e1ec3, type: 3}
+  m_Name: Booster_2x2
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryItemSO
+  Id: 7
+  Name: Booster_2x2
+  Sprite: {fileID: 21300000, guid: d302b61834919794895e2637e8f569e9, type: 3}
+  VehicleAttachment: {fileID: 958195206548907700, guid: 2c802d3b3e156774ea7d51a269544b17, type: 3}
+  VehicleAttachmentPreview: {fileID: 1918700630753444412, guid: 8e9ce999bb093ab47a6bd89f9db9e371, type: 3}
