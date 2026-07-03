@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wedge (2x1) Preview
       objectReference: {fileID: 0}
+    - target: {fileID: 1490195252720134788, guid: 0a50fe2d7e349d840b9b612990292283, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1644424269049139027, guid: 0a50fe2d7e349d840b9b612990292283, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -28,9 +32,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5763856237464818027, guid: 0a50fe2d7e349d840b9b612990292283, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9468d0a7e4c0c444fa4cd1a6902e8aa9, type: 2}
+    - target: {fileID: 7266672192314650111, guid: 0a50fe2d7e349d840b9b612990292283, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9468d0a7e4c0c444fa4cd1a6902e8aa9, type: 2}
     m_RemovedComponents:
     - {fileID: 3414736213626969186, guid: 0a50fe2d7e349d840b9b612990292283, type: 3}
-    - {fileID: 4005170789580982201, guid: 0a50fe2d7e349d840b9b612990292283, type: 3}
     - {fileID: 6292077513765761159, guid: 0a50fe2d7e349d840b9b612990292283, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

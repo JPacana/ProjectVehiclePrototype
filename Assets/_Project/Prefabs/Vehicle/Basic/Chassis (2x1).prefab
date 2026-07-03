@@ -308,7 +308,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89fca8f68925dfb40b5a75c7921b77aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleComponent
-  _sockets: []
+  _flippable: 0
+  _rotatable: 1
+  _layout1: {fileID: 3490900126385571063}
+  _layout2: {fileID: 0}
 --- !u!1 &5369249957613374180
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,7 +354,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3490900126385571063}
   m_Layer: 0
-  m_Name: Basic Vehicle Component
+  m_Name: Layout 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
