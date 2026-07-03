@@ -7,5 +7,6 @@ public class InventoryItemSO : ScriptableObject
     public string Name;
     public Sprite Sprite;
     public GameObject VehicleAttachment;
+    public GameObject VehicleAttachmentDrag;
     public GameObject VehicleAttachmentPreview;
 }

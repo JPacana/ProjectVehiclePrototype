@@ -16,4 +16,5 @@ MonoBehaviour:
   Name: Booster_2x1
   Sprite: {fileID: 21300000, guid: d8a0cb20bcbd7b3439fb0baebdbf9616, type: 3}
   VehicleAttachment: {fileID: 2113092395599084313, guid: 57d8bbe71745bc24791e7dedc6d6126c, type: 3}
+  VehicleAttachmentDrag: {fileID: 3828008473184528411, guid: 9c3e2c2a609d3244a90d19c7b3b86dbc, type: 3}
   VehicleAttachmentPreview: {fileID: 3828008473184528411, guid: 74db3bea21600174c9866ff850bf5e40, type: 3}

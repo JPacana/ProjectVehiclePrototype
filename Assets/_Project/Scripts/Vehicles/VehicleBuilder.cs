@@ -24,7 +24,8 @@ public class VehicleBuilder : MonoBehaviour
     private Collider[] _buildSocketColliders;
     private const int _maxBuildSocketColliders = 20;
 
-    private GameObject _previewObject = null;
+    private GameObject _ghostObject = null;
+    private GameObject _dragObject = null;
 
     void Awake()
     {
@@ -33,6 +34,164 @@ public class VehicleBuilder : MonoBehaviour
             _inventory.Add(inventoryItem);
         }
         _buildSocketColliders = new Collider[_maxBuildSocketColliders];
+    }
+    
+    private bool GetClosestAvailableWorldSocket(Vector3 worldPosition, out BuildSocket closestSocket, out float distanceSqr)
+    {
+        float snapRadius = 0.7071f;
+        var numColliders = Physics.OverlapSphereNonAlloc(worldPosition, snapRadius, _buildSocketColliders, _buildSocketLayers);
+        
+        closestSocket = null;
+        distanceSqr = Mathf.Infinity;
+        
+        for (int i = 0; i < numColliders; i++)
+        {
+            // Ignore Build Sockets that are on the _ghostObject
+            if (_buildSocketColliders[i].transform.IsChildOf(_ghostObject.transform)) continue;
+            if (_buildSocketColliders[i].transform.IsChildOf(_dragObject.transform)) continue;
+            
+            var socket = _buildSocketColliders[i].gameObject.GetComponent<BuildSocket>();
+            if (socket != null && !socket.IsOccupied)
+            {
+                var d = (worldPosition - _buildSocketColliders[i].transform.position).sqrMagnitude;
+                if (d < distanceSqr)
+                {
+                    distanceSqr = d;
+                    closestSocket = socket;
+                }
+            }
+        }
+        return (closestSocket != null);
+    }
+    
+
+    private BuildSocket GetClosestAvailableWorldSocket(Vector3 mouseWorldPos)
+    {
+        //float snapRadius = 0.25f;
+        float snapRadius = 0.7071f;
+        var numColliders = Physics.OverlapSphereNonAlloc(mouseWorldPos, snapRadius, _buildSocketColliders, _buildSocketLayers);
+        BuildSocket closestSocket = null;
+        float bestDistance = Mathf.Infinity;
+        
+        for (int i = 0; i < numColliders; i++)
+        {
+            // Ignore Build Sockets that are on the _ghostObject
+            if (_buildSocketColliders[i].transform.IsChildOf(_ghostObject.transform)) continue;
+            
+            var socket = _buildSocketColliders[i].gameObject.GetComponent<BuildSocket>();
+            if (socket != null && !socket.IsOccupied)
+            {
+                var d = (mouseWorldPos - _buildSocketColliders[i].transform.position).sqrMagnitude;
+                if (d < bestDistance)
+                {
+                    bestDistance = d;
+                    closestSocket = socket;
+                }
+            }
+        }
+        return closestSocket;
+    }
+
+    private BuildSocket[] _ghostSockets;
+    private ClearanceVolume[] _ghostClearanceVolumes;
+    private BuildSocket[] _dragSockets;
+    private ClearanceVolume[] _dragClearanceVolumes;
+    public void StartPreview(InventoryItemSO item, Vector2 mousePosition)
+    {
+        if (!_dragObject) _dragObject = Instantiate(item.VehicleAttachmentDrag);
+        _dragSockets = _dragObject.GetComponentsInChildren<BuildSocket>();
+        _dragClearanceVolumes = _dragObject.GetComponentsInChildren<ClearanceVolume>();
+        
+        if (!_ghostObject) _ghostObject = Instantiate(item.VehicleAttachmentPreview);
+        _ghostSockets = _ghostObject.GetComponentsInChildren<BuildSocket>();
+        _ghostClearanceVolumes = _ghostObject.GetComponentsInChildren<ClearanceVolume>();
+    }
+    
+    public void UpdatePreview(InventoryItemSO item, Vector2 mousePosition)
+    {
+        // Raycast from the camera to the mouse position
+        Ray ray = _buildCamera.ScreenPointToRay(mousePosition);
+        RaycastHit hit;
+
+        var validMouseHit = Physics.Raycast(ray, out hit, Mathf.Infinity, _buildSurfaceLayers);
+        
+        if (validMouseHit)
+            _dragObject.transform.position = hit.point;
+
+        if (!_vehicleBase.RootComponent)
+        {
+            _ghostObject.transform.position = _vehicleBase.transform.position;
+        }
+        else
+        {
+            _ghostObject.transform.rotation = Quaternion.identity;
+            _dragObject.transform.rotation = Quaternion.identity;
+            
+            if (validMouseHit)
+            { 
+                Debug.Log("=== UpdatePreview ===");
+                // For each socket on the _dragObject, find the closest socket among nearby build socket colliders
+                BuildSocket closestDragSocket = null;
+                BuildSocket closestTargetSocket = null;
+                float closestDistance = Mathf.Infinity;
+            
+                for (int i = 0; i < _dragSockets.Length; i++)
+                {
+                    if (GetClosestAvailableWorldSocket(
+                            _dragSockets[i].transform.position, 
+                            out BuildSocket closestSocket,
+                            out float distanceSqr))
+                    {
+                        if (distanceSqr < closestDistance)
+                        {
+                            Debug.Log($"Closest distance: {distanceSqr} [Between _dragSockets[{i}].{_dragSockets[i].name} and closestSocket.{closestSocket.name}]");
+                            closestDragSocket = _dragSockets[i];
+                            closestTargetSocket = closestSocket;
+                            closestDistance = distanceSqr;
+                        }
+                    }
+                }
+            
+                // By this point, we should know which 2 sockets are closest to each other
+                
+                if (closestDragSocket != null && closestTargetSocket != null)
+                {
+                    Debug.Log($"UpdatePreview -> {closestDragSocket.name} & {closestTargetSocket.name}");
+                    CalculateTransformToConnectSockets(_dragObject, closestDragSocket, closestTargetSocket, 
+                        out var position, out var rotation);
+                    _ghostObject.transform.position = position;
+                    _ghostObject.transform.rotation = rotation;
+                }
+                else
+                {
+                    _ghostObject.transform.position = hit.point;
+                }
+            }
+
+            //_ghostObject.transform.rotation = Quaternion.identity;
+            //if (Physics.Raycast(ray, out hit, Mathf.Infinity, _buildSurfaceLayers))
+            //{
+            //    BuildSocket targetBuildSocket = GetClosestAvailableWorldSocket(hit.point);
+            //    if (targetBuildSocket)
+            //    {
+            //        SnapGhostToTarget(targetBuildSocket);
+            //    }
+            //    else
+            //    {
+            //        _ghostObject.transform.position = hit.point;
+            //    }
+            //}
+            //
+            //// Check for clearances
+            //bool overlapsSomething = false;
+            //for (int i = 0; i < _ghostClearanceVolumes.Length; i++)
+            //{
+            //    var overlappingClearanceVolumes = _ghostClearanceVolumes[i].OverlappedColliders
+            //        .Where(c => c.gameObject.layer == LayerMask.NameToLayer("Clearance Volume")).ToList().Count;
+            //    if (overlappingClearanceVolumes > 0) overlapsSomething = true;
+            //}
+            ////if (overlapsSomething) Debug.Log("UpdatePreview: Ghost is overlapping an object.");
+        }
     }
     
     void SnapGhostToTarget(BuildSocket targetBuildSocket)
@@ -58,94 +217,48 @@ public class VehicleBuilder : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(-targetBuildSocket.transform.forward, targetBuildSocket.transform.up);
         
         // Calculate the relative rotation deviation of our chosen ghost socket from its parent center
-        Quaternion localSocketRot = Quaternion.Inverse(_previewObject.transform.rotation) * bestGhostBuildSocket.transform.rotation;
+        Quaternion localSocketRot = Quaternion.Inverse(_ghostObject.transform.rotation) * bestGhostBuildSocket.transform.rotation;
 
         // Apply the corrected global rotation to the ghost parent center
-        _previewObject.transform.rotation = targetRotation * Quaternion.Inverse(localSocketRot);
+        _ghostObject.transform.rotation = targetRotation * Quaternion.Inverse(localSocketRot);
 
         // --- STEP 2: POSITIONING (OFFSET) ---
         // Calculate where the ghost socket is sitting relative to the ghost's center pivot
-        Vector3 localOffset = _previewObject.transform.InverseTransformPoint(bestGhostBuildSocket.transform.position);
+        Vector3 localOffset = _ghostObject.transform.InverseTransformPoint(bestGhostBuildSocket.transform.position);
         
         // Translate that local offset into the newly calculated world space orientation
-        Vector3 worldOffset = _previewObject.transform.TransformDirection(localOffset);
+        Vector3 worldOffset = _ghostObject.transform.TransformDirection(localOffset);
 
         // Position the ghost center so the ghost socket perfectly hits the target socket coordinate
-        _previewObject.transform.position = targetBuildSocket.transform.position - worldOffset;
+        _ghostObject.transform.position = targetBuildSocket.transform.position - worldOffset;
     }
 
-    private BuildSocket GetClosestAvailableWorldSocket(Vector3 mouseWorldPos)
+    private void CalculateTransformToConnectSockets(
+        GameObject sourceObject, BuildSocket sourceSocket, BuildSocket destinationSocket,
+        out Vector3 position, out Quaternion rotation)
     {
-        //float snapRadius = 0.25f;
-        float snapRadius = 0.7071f;
-        var numColliders = Physics.OverlapSphereNonAlloc(mouseWorldPos, snapRadius, _buildSocketColliders, _buildSocketLayers);
-        BuildSocket closestSocket = null;
-        float bestDistance = Mathf.Infinity;
+        // --- STEP 1: ORIENTATION (ROTATION) ---
+        // Sockets connect face-to-face, meaning their forward vectors must look at each other.
+        // We look in the OPPOSITE direction of the target socket's forward axis.
+        Quaternion targetRotation = Quaternion.LookRotation(-destinationSocket.transform.forward, destinationSocket.transform.up);
         
-        for (int i = 0; i < numColliders; i++)
-        {
-            // Ignore Build Sockets that are on the _previewObject
-            if (_buildSocketColliders[i].transform.IsChildOf(_previewObject.transform)) continue;
-            
-            var socket = _buildSocketColliders[i].gameObject.GetComponent<BuildSocket>();
-            if (socket != null && !socket.IsOccupied)
-            {
-                var d = (mouseWorldPos - _buildSocketColliders[i].transform.position).sqrMagnitude;
-                if (d < bestDistance)
-                {
-                    bestDistance = d;
-                    closestSocket = socket;
-                }
-            }
-        }
-        return closestSocket;
-    }
+        // Calculate the relative rotation deviation of our chosen ghost socket from its parent center
+        Quaternion localSocketRot = Quaternion.Inverse(sourceObject.transform.rotation) * sourceSocket.transform.rotation;
 
-    private BuildSocket[] _ghostSockets;
-    private ClearanceVolume[] _ghostClearanceVolumes;
-    public void StartPreview(InventoryItemSO item, Vector2 mousePosition)
-    {
-        if (!_previewObject) _previewObject = Instantiate(item.VehicleAttachmentPreview);
-        _ghostSockets = _previewObject.GetComponentsInChildren<BuildSocket>();
-        _ghostClearanceVolumes = _previewObject.GetComponentsInChildren<ClearanceVolume>();
-    }
-    
-    public void UpdatePreview(InventoryItemSO item, Vector2 mousePosition)
-    {
-        if (!_vehicleBase.RootComponent)
-        {
-            _previewObject.transform.position = _vehicleBase.transform.position;
-        }
-        else
-        {
-            // Raycast from the camera to the mouse position
-            Ray ray = _buildCamera.ScreenPointToRay(mousePosition);
-            RaycastHit hit;
+        // Apply the corrected global rotation to the ghost parent center
+        //sourceObject.transform.rotation = targetRotation * Quaternion.Inverse(localSocketRot);
+        rotation = targetRotation * Quaternion.Inverse(localSocketRot);
 
-            _previewObject.transform.rotation = Quaternion.identity;
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, _buildSurfaceLayers))
-            {
-                BuildSocket targetBuildSocket = GetClosestAvailableWorldSocket(hit.point);
-                if (targetBuildSocket)
-                {
-                    SnapGhostToTarget(targetBuildSocket);
-                }
-                else
-                {
-                    _previewObject.transform.position = hit.point;
-                }
-            }
-            
-            // Check for clearances
-            bool overlapsSomething = false;
-            for (int i = 0; i < _ghostClearanceVolumes.Length; i++)
-            {
-                var overlappingClearanceVolumes = _ghostClearanceVolumes[i].OverlappedColliders
-                    .Where(c => c.gameObject.layer == LayerMask.NameToLayer("Clearance Volume")).ToList().Count;
-                if (overlappingClearanceVolumes > 0) overlapsSomething = true;
-            }
-            //if (overlapsSomething) Debug.Log("UpdatePreview: Ghost is overlapping an object.");
-        }
+        // --- STEP 2: POSITIONING (OFFSET) ---
+        // Calculate where the ghost socket is sitting relative to the ghost's center pivot
+        Vector3 localOffset = sourceObject.transform.InverseTransformPoint(sourceSocket.transform.position);
+        
+        // Translate that local offset into the newly calculated world space orientation
+        Vector3 worldOffset = sourceObject.transform.TransformDirection(localOffset);
+
+        // Position the ghost center so the ghost socket perfectly hits the target socket coordinate
+        //sourceObject.transform.position = destinationSocket.transform.position - worldOffset;
+        position = destinationSocket.transform.position - worldOffset;
     }
 
     private ClearanceVolume[] _vehicleClearanceVolumes;
@@ -163,13 +276,12 @@ public class VehicleBuilder : MonoBehaviour
             bool overlapsSomething = false;
             for (int i = 0; i < _ghostClearanceVolumes.Length; i++)
             {
-                ////var overlappingClearanceVolumes = _ghostClearanceVolumes[i].OverlappedColliders
-                ////    .Where(c => c.gameObject.layer == LayerMask.GetMask("Clearance Volume")).ToList().Count;
-                //var overlappingClearanceVolumes = _ghostClearanceVolumes[i].OverlappedColliders
-                //    .Where(c => c.gameObject.layer == LayerMask.NameToLayer("Clearance Volume")).ToList().Count;
-                //if (overlappingClearanceVolumes > 0) overlapsSomething = true;
-                //overlapsSomething = _ghostClearanceVolumes[i].GetOverlappedClearanceVolumes().Length > 0;
                 var overlappedClearanceVolumes = _ghostClearanceVolumes[i].GetOverlappedClearanceVolumes();
+                
+                // Eliminate any detected collisions that occur with the _dragObject since we don't care about those
+                //var filteredOverlappedClearanceVolumes = overlappedClearanceVolumes.Where(c => !c.transform.IsChildOf(_dragObject.transform)).ToArray();
+                
+                //if (filteredOverlappedClearanceVolumes.Length > 0) overlapsSomething = true;
                 if (overlappedClearanceVolumes.Length > 0) overlapsSomething = true;
                 foreach (var overlappedClearanceVolume in overlappedClearanceVolumes)
                 {
@@ -182,15 +294,16 @@ public class VehicleBuilder : MonoBehaviour
             {
                 var newBaseComponent = Instantiate(
                     item.VehicleAttachment, 
-                    _previewObject.transform.position, 
-                    _previewObject.transform.rotation, 
+                    _ghostObject.transform.position, 
+                    _ghostObject.transform.rotation, 
                     _vehicleBase.transform).GetComponent<VehicleComponent>();
             }
         }
         
         _vehicleClearanceVolumes = _vehicleBase.GetComponentsInChildren<ClearanceVolume>();
         
-        Destroy(_previewObject.gameObject);
+        Destroy(_ghostObject.gameObject);
+        Destroy(_dragObject.gameObject);
     }
     
     private AttachmentSocket FindClosestAttachmentSocketToPosition(Vector3 position, List<AttachmentSocket> sockets)
@@ -211,12 +324,12 @@ public class VehicleBuilder : MonoBehaviour
     //private List<AttachmentSocket> _instantiatedAttachmentSockets;
     //public void Preview(InventoryItemSO item, Vector3 position)
     //{
-    //    if (_previewObject == null)
+    //    if (_ghostObject == null)
     //    {
-    //        _previewObject = Instantiate(item.VehicleAttachment);
-    //        _instantiatedAttachmentSockets = _previewObject.GetComponentsInChildren<AttachmentSocket>().ToList();
+    //        _ghostObject = Instantiate(item.VehicleAttachment);
+    //        _instantiatedAttachmentSockets = _ghostObject.GetComponentsInChildren<AttachmentSocket>().ToList();
     //    }
-    //    _previewObject.transform.position = position;
+    //    _ghostObject.transform.position = position;
     //    
     //    if (_previewGhostObject == null)
     //    {
@@ -283,7 +396,7 @@ public class VehicleBuilder : MonoBehaviour
 
     //public void PlaceAttachment(InventoryItemSO item, Vector3 position)
     //{
-    //    Destroy(_previewObject.gameObject);
+    //    Destroy(_ghostObject.gameObject);
     //    Destroy(_previewGhostObject.gameObject);
 
     //    // Find the closest valid attachment point and instantiate / move the preview ghost there

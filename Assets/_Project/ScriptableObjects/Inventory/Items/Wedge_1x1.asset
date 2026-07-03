@@ -16,4 +16,5 @@ MonoBehaviour:
   Name: Wedge 1x1
   Sprite: {fileID: 21300000, guid: d036850d3cba9174b9ceda4f706a25e4, type: 3}
   VehicleAttachment: {fileID: 6682926227758078027, guid: d9dbf53c6467caf4f931f3c2a32f74f9, type: 3}
+  VehicleAttachmentDrag: {fileID: 8531843291010481428, guid: 47860222bc081664ea1b056a2b72b525, type: 3}
   VehicleAttachmentPreview: {fileID: 8531843291010481428, guid: 70f984f702cc6ee44bd08bf6dc52d6b1, type: 3}

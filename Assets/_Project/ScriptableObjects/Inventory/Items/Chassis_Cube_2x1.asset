@@ -16,4 +16,5 @@ MonoBehaviour:
   Name: Chassis_Cube_2x1
   Sprite: {fileID: 21300000, guid: 10a09b1c9d51f7b4db8d485838e283d0, type: 3}
   VehicleAttachment: {fileID: 3646613032134145938, guid: 66400090bc80137459128dc978091efe, type: 3}
+  VehicleAttachmentDrag: {fileID: 6621971328901813734, guid: 7bf90adaf7f69ab47a5fa3f0237b45e3, type: 3}
   VehicleAttachmentPreview: {fileID: 6621971328901813734, guid: 412f0dffa2676e145a59ee6945d5d007, type: 3}
