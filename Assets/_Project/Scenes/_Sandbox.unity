@@ -2081,6 +2081,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1521119668}
   - component: {fileID: 1521119669}
+  - component: {fileID: 1521119670}
   m_Layer: 0
   m_Name: Vehicle Builder
   m_TagString: Untagged
@@ -2128,6 +2129,20 @@ MonoBehaviour:
   _buildSocketLayers:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &1521119670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1521119667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7616443d8dbe9004ea1ae6fd7de8f5ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VehicleBuilderInput
+  _vehicleBuilder: {fileID: 1521119669}
+  _rotationAction: {fileID: 6599269683017173247, guid: 9c770703dd1f9334cbf961cafe35500c, type: 3}
 --- !u!43 &1548886306
 Mesh:
   m_ObjectHideFlags: 0

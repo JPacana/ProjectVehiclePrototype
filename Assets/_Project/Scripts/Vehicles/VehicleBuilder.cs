@@ -26,7 +26,7 @@ public class VehicleBuilder : MonoBehaviour
 
     private GameObject _ghostObject = null;
     private GameObject _dragObject = null;
-
+    
     void Awake()
     {
         foreach (var inventoryItem in _initialInventory.Items)
@@ -63,7 +63,6 @@ public class VehicleBuilder : MonoBehaviour
         }
         return (closestSocket != null);
     }
-    
 
     private BuildSocket GetClosestAvailableWorldSocket(Vector3 mouseWorldPos)
     {
@@ -101,6 +100,10 @@ public class VehicleBuilder : MonoBehaviour
         if (!_dragObject) _dragObject = Instantiate(item.VehicleAttachmentDrag);
         _dragSockets = _dragObject.GetComponentsInChildren<BuildSocket>();
         _dragClearanceVolumes = _dragObject.GetComponentsInChildren<ClearanceVolume>();
+
+        // TODO: Remove this test
+        // This test is to see how rotating the _dragObject can work
+        // _dragObject.transform.rotation = Quaternion.AngleAxis(45f, _dragObject.transform.up);
         
         if (!_ghostObject) _ghostObject = Instantiate(item.VehicleAttachmentPreview);
         _ghostSockets = _ghostObject.GetComponentsInChildren<BuildSocket>();
@@ -125,11 +128,10 @@ public class VehicleBuilder : MonoBehaviour
         else
         {
             _ghostObject.transform.rotation = Quaternion.identity;
-            _dragObject.transform.rotation = Quaternion.identity;
+            //_dragObject.transform.rotation = Quaternion.identity;
             
             if (validMouseHit)
             { 
-                Debug.Log("=== UpdatePreview ===");
                 // For each socket on the _dragObject, find the closest socket among nearby build socket colliders
                 BuildSocket closestDragSocket = null;
                 BuildSocket closestTargetSocket = null;
@@ -144,7 +146,6 @@ public class VehicleBuilder : MonoBehaviour
                     {
                         if (distanceSqr < closestDistance)
                         {
-                            Debug.Log($"Closest distance: {distanceSqr} [Between _dragSockets[{i}].{_dragSockets[i].name} and closestSocket.{closestSocket.name}]");
                             closestDragSocket = _dragSockets[i];
                             closestTargetSocket = closestSocket;
                             closestDistance = distanceSqr;
@@ -156,11 +157,11 @@ public class VehicleBuilder : MonoBehaviour
                 
                 if (closestDragSocket != null && closestTargetSocket != null)
                 {
-                    Debug.Log($"UpdatePreview -> {closestDragSocket.name} & {closestTargetSocket.name}");
-                    CalculateTransformToConnectSockets(_dragObject, closestDragSocket, closestTargetSocket, 
-                        out var position, out var rotation);
-                    _ghostObject.transform.position = position;
-                    _ghostObject.transform.rotation = rotation;
+                    var originalDragObjectPosition = _dragObject.transform.position;
+                    var originalDragObjectRotation = _dragObject.transform.rotation;
+                    TransformObjectToConnectSockets(_dragObject, closestDragSocket, closestTargetSocket);
+                    _ghostObject.transform.SetPositionAndRotation(_dragObject.transform.position, _dragObject.transform.rotation);
+                    _dragObject.transform.SetPositionAndRotation(originalDragObjectPosition, originalDragObjectRotation);
                 }
                 else
                 {
@@ -233,21 +234,19 @@ public class VehicleBuilder : MonoBehaviour
         _ghostObject.transform.position = targetBuildSocket.transform.position - worldOffset;
     }
 
-    private void CalculateTransformToConnectSockets(
-        GameObject sourceObject, BuildSocket sourceSocket, BuildSocket destinationSocket,
-        out Vector3 position, out Quaternion rotation)
+    private void TransformObjectToConnectSockets(GameObject sourceObject, BuildSocket sourceSocket, BuildSocket destinationSocket)
     {
         // --- STEP 1: ORIENTATION (ROTATION) ---
         // Sockets connect face-to-face, meaning their forward vectors must look at each other.
-        // We look in the OPPOSITE direction of the target socket's forward axis.
+        // We look in the OPPOSITE direction of the destination socket's forward axis.
         Quaternion targetRotation = Quaternion.LookRotation(-destinationSocket.transform.forward, destinationSocket.transform.up);
         
         // Calculate the relative rotation deviation of our chosen ghost socket from its parent center
         Quaternion localSocketRot = Quaternion.Inverse(sourceObject.transform.rotation) * sourceSocket.transform.rotation;
+        //Debug.Log($"localSocketRot = {localSocketRot.eulerAngles}");
 
         // Apply the corrected global rotation to the ghost parent center
-        //sourceObject.transform.rotation = targetRotation * Quaternion.Inverse(localSocketRot);
-        rotation = targetRotation * Quaternion.Inverse(localSocketRot);
+        sourceObject.transform.rotation = targetRotation * Quaternion.Inverse(localSocketRot);
 
         // --- STEP 2: POSITIONING (OFFSET) ---
         // Calculate where the ghost socket is sitting relative to the ghost's center pivot
@@ -257,8 +256,7 @@ public class VehicleBuilder : MonoBehaviour
         Vector3 worldOffset = sourceObject.transform.TransformDirection(localOffset);
 
         // Position the ghost center so the ghost socket perfectly hits the target socket coordinate
-        //sourceObject.transform.position = destinationSocket.transform.position - worldOffset;
-        position = destinationSocket.transform.position - worldOffset;
+        sourceObject.transform.position = destinationSocket.transform.position - worldOffset;
     }
 
     private ClearanceVolume[] _vehicleClearanceVolumes;
@@ -290,7 +288,7 @@ public class VehicleBuilder : MonoBehaviour
             }
             //if (overlapsSomething) Debug.Log("EndPreview: Ghost is overlapping an object.");
 
-            if (!overlapsSomething)
+            //if (!overlapsSomething)
             {
                 var newBaseComponent = Instantiate(
                     item.VehicleAttachment, 
@@ -320,148 +318,13 @@ public class VehicleBuilder : MonoBehaviour
         }
         return closestAttachmentSocket;
     }
-
-    //private List<AttachmentSocket> _instantiatedAttachmentSockets;
-    //public void Preview(InventoryItemSO item, Vector3 position)
-    //{
-    //    if (_ghostObject == null)
-    //    {
-    //        _ghostObject = Instantiate(item.VehicleAttachment);
-    //        _instantiatedAttachmentSockets = _ghostObject.GetComponentsInChildren<AttachmentSocket>().ToList();
-    //    }
-    //    _ghostObject.transform.position = position;
-    //    
-    //    if (_previewGhostObject == null)
-    //    {
-    //        _previewGhostObject = Instantiate(item.VehicleAttachmentPreview);
-    //    }
-    //    
-    //    // Find the closest valid attachment point and instantiate / move the preview ghost there
-    //    //if (_instantiatedAttachmentSockets.Count == 0)
-    //    if (_attachmentSockets.Count == 0)
-    //    {
-    //        _previewGhostObject.transform.position = _vehicleBase.transform.position;
-    //    }
-    //    else
-    //    {
-    //        var closestAttachmentSocket = FindClosestTargetAttachmentSocket(position);
-
-    //        var closestInstantiatedAttachmentSocket = FindClosestInstantiatedAttachmentSocket(closestAttachmentSocket);
-
-    //        if (_previewGhostObject == null)
-    //        {
-    //            _previewGhostObject = Instantiate(item.VehicleAttachmentPreview);
-    //        }
-    //        _previewGhostObject.transform.position = closestAttachmentSocket.transform.position -
-    //                                                 closestInstantiatedAttachmentSocket.transform.localPosition;
-    //    }
-    //}
-
-    //private AttachmentSocket FindClosestInstantiatedAttachmentSocket(AttachmentSocket closestAttachmentSocket)
-    //{
-    //    AttachmentSocket closestInstantiatedAttachmentSocket = null;
-    //    {
-    //        float closestDistanceSqr = Mathf.Infinity;
-    //        foreach (var instantiatedAttachmentPoint in _instantiatedAttachmentSockets)
-    //        {
-    //            var distanceSqr = (instantiatedAttachmentPoint.transform.position - closestAttachmentSocket.transform.position).sqrMagnitude;
-    //            if (distanceSqr < closestDistanceSqr)
-    //            {
-    //                closestDistanceSqr = distanceSqr;
-    //                closestInstantiatedAttachmentSocket = instantiatedAttachmentPoint;
-    //            }
-    //        }
-    //    }
-    //    return closestInstantiatedAttachmentSocket;
-    //}
-
-    //private AttachmentSocket FindClosestTargetAttachmentSocket(Vector3 position)
-    //{
-    //    AttachmentSocket closestAttachmentSocket = null;
-    //    {
-    //        float closestDistanceSqr = Mathf.Infinity;
-    //        //foreach (var targetAttachmentSocket in _attachmentSockets)
-    //        foreach (var targetAttachmentSocket in _attachmentSockets.Keys)
-    //        {
-    //            var distanceSqr = (targetAttachmentSocket.transform.position - position).sqrMagnitude;
-    //            if (distanceSqr < closestDistanceSqr)
-    //            {
-    //                closestDistanceSqr = distanceSqr;
-    //                closestAttachmentSocket = targetAttachmentSocket;
-    //            }
-    //        }
-    //    }
-    //    return closestAttachmentSocket;
-    //}
-
-    //public void PlaceAttachment(InventoryItemSO item, Vector3 position)
-    //{
-    //    Destroy(_ghostObject.gameObject);
-    //    Destroy(_previewGhostObject.gameObject);
-
-    //    // Find the closest valid attachment point and instantiate / move the preview ghost there
-    //    if (_attachmentSockets.Count == 0)
-    //    {
-    //        var spawnPosition = _vehicleBase.transform.position;
-    //        Instantiate(item.VehicleAttachment, spawnPosition, Quaternion.identity, _vehicleBase.transform).GetComponent<VehicleAttachment>();
-    //        
-    //        var baseAttachmentSockets = _vehicleBase.GetComponentsInChildren<AttachmentSocket>().ToList();
-    //        foreach (var attachmentSocket in baseAttachmentSockets)
-    //        {
-    //            _attachmentSockets.Add(attachmentSocket, null);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        var closestAttachmentSocket = FindClosestTargetAttachmentSocket(position);
-
-    //        var closestInstantiatedAttachmentSocket = FindClosestInstantiatedAttachmentSocket(closestAttachmentSocket);
-    //        
-    //        Attach(closestAttachmentSocket, item, closestInstantiatedAttachmentSocket);
-    //    }
-    //}
-
-    //public bool Attach(
-    //    AttachmentSocket targetAttachmentSocket, 
-    //    InventoryItemSO item,
-    //    AttachmentSocket attachmentSocket)
-    //{
-    //    // Check if the AttachmentSocket is available...
-    //    if (_attachmentSockets.TryGetValue(targetAttachmentSocket, out var currentAttachment))
-    //    {
-    //        if (currentAttachment) return false;
-
-    //        var spawnPosition = targetAttachmentSocket.transform.position - attachmentSocket.transform.localPosition;
-    //        var newAttachment = Instantiate(item.VehicleAttachment, spawnPosition, Quaternion.identity, _vehicleBase.transform.GetChild(0)).GetComponent<VehicleAttachment>();
-    //        _attachmentSockets[targetAttachmentSocket] = newAttachment;
-
-    //        var newAttachmentSockets = newAttachment.GetComponentsInChildren<AttachmentSocket>();
-    //        if (newAttachment.Terminal)
-    //        {
-    //            // Disable all attachments if it's terminal. Nothing can be attached to this.
-    //            foreach (var newAttachmentSocket in newAttachmentSockets)
-    //            {
-    //                newAttachmentSocket.gameObject.SetActive(false);
-    //            }
-    //        }
-    //        else
-    //        {
-    //            foreach (var newAttachmentSocket in newAttachmentSockets)
-    //            {
-    //                if (newAttachmentSocket == attachmentSocket)
-    //                {
-    //                    newAttachmentSocket.gameObject.SetActive(false);
-    //                }
-    //                else
-    //                {
-    //                    _attachmentSockets.Add(newAttachmentSocket, null);
-    //                }
-    //            }
-    //        }
-    //        
-    //        return true;
-    //    }
-
-    //    return false;
-    //}
+    
+    // Build Controls
+    private float _rotationAmount = 45f;
+    public void Rotate(float direction)
+    {
+        if (_dragObject != null)
+            _dragObject.transform.Rotate(_dragObject.transform.up, direction * _rotationAmount);
+             //_dragObject.transform.rotation = Quaternion.AngleAxis(_rotationAmount * direction, _dragObject.transform.up);
+    }
 }
