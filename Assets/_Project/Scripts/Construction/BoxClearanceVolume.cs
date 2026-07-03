@@ -4,33 +4,52 @@ using System.Linq;
 using System.Net;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider))]
-public class ClearanceVolume : MonoBehaviour
+[RequireComponent(typeof(BoxCollider))]
+public class BoxClearanceVolume : MonoBehaviour, IClearanceVolume
 {
-    private Collider _collider;
+    private BoxCollider _collider;
     private readonly HashSet<Collider> _overlappedColliders = new();
+
     public HashSet<Collider> OverlappedColliders => _overlappedColliders;
 
     [SerializeField] private LayerMask _clearanceVolumeLayerMask;
+    
+    private Collider[] _hitColliders;
+    private const int _maxHitColliders = 20;
 
     void Awake()
     {
-        _collider = GetComponent<Collider>();
+        _collider = GetComponent<BoxCollider>();
+        _hitColliders = new Collider[_maxHitColliders];
     }
     
-    //void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.transform.IsChildOf(transform.parent)) return;
-    //    _overlappedColliders.Add(other);
-    //}
-
-    //void OnTriggerExit(Collider other)
-    //{
-    //    if (other.transform.IsChildOf(transform.parent)) return;
-    //    _overlappedColliders.Remove(other);
-    //}
-    
     public Collider[] GetOverlappedClearanceVolumes()
+    {
+        // 1. Calculate the center in World Space
+        Vector3 worldCenter = _collider.transform.TransformPoint(_collider.center);
+
+        // 2. Calculate the half-extents (half of the lossy scale multiplied by collider size)
+        Vector3 lossyScale = _collider.transform.lossyScale;
+        Vector3 halfExtents = new Vector3(
+            (_collider.size.x * lossyScale.x) / 2f,
+            (_collider.size.y * lossyScale.y) / 2f,
+            (_collider.size.z * lossyScale.z) / 2f
+        );
+
+        // 3. Get the world rotation of the transform
+        Quaternion worldRotation = _collider.transform.rotation;
+
+        // 4. Pass the parameters into the physics check
+        Physics.OverlapBoxNonAlloc(worldCenter, halfExtents, _hitColliders, worldRotation, _clearanceVolumeLayerMask);
+        
+        if (_hitColliders == null) Debug.Log("_hitColliders is null!");
+        if (_hitColliders.Length == 0) Debug.Log("_hitColliders is empty!");
+            
+        return _hitColliders.Where(c => c != null && !c.transform.IsChildOf(_collider.transform.parent)).ToArray();
+    }
+    
+    
+    public Collider[] GetOverlappedClearanceVolumes_BoxCollider()
     {
         if (_collider is not BoxCollider targetBoxCollider) return Array.Empty<Collider>();
         

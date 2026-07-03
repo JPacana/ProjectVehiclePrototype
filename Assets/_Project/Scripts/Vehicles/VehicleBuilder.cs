@@ -92,14 +92,14 @@ public class VehicleBuilder : MonoBehaviour
     }
 
     private BuildSocket[] _ghostSockets;
-    private ClearanceVolume[] _ghostClearanceVolumes;
+    private IClearanceVolume[] _ghostClearanceVolumes;
     private BuildSocket[] _dragSockets;
-    private ClearanceVolume[] _dragClearanceVolumes;
+    private IClearanceVolume[] _dragClearanceVolumes;
     public void StartPreview(InventoryItemSO item, Vector2 mousePosition)
     {
         if (!_dragObject) _dragObject = Instantiate(item.VehicleAttachmentDrag);
         _dragSockets = _dragObject.GetComponentsInChildren<BuildSocket>();
-        _dragClearanceVolumes = _dragObject.GetComponentsInChildren<ClearanceVolume>();
+        _dragClearanceVolumes = _dragObject.GetComponentsInChildren<IClearanceVolume>();
 
         // TODO: Remove this test
         // This test is to see how rotating the _dragObject can work
@@ -107,7 +107,7 @@ public class VehicleBuilder : MonoBehaviour
         
         if (!_ghostObject) _ghostObject = Instantiate(item.VehicleAttachmentPreview);
         _ghostSockets = _ghostObject.GetComponentsInChildren<BuildSocket>();
-        _ghostClearanceVolumes = _ghostObject.GetComponentsInChildren<ClearanceVolume>();
+        _ghostClearanceVolumes = _ghostObject.GetComponentsInChildren<IClearanceVolume>();
     }
     
     public void UpdatePreview(InventoryItemSO item, Vector2 mousePosition)
@@ -259,7 +259,7 @@ public class VehicleBuilder : MonoBehaviour
         sourceObject.transform.position = destinationSocket.transform.position - worldOffset;
     }
 
-    private ClearanceVolume[] _vehicleClearanceVolumes;
+    private IClearanceVolume[] _vehicleClearanceVolumes;
     public void EndPreview(InventoryItemSO item, Vector3 position)
     {
         if (!_vehicleBase.RootComponent)
@@ -288,7 +288,7 @@ public class VehicleBuilder : MonoBehaviour
             }
             //if (overlapsSomething) Debug.Log("EndPreview: Ghost is overlapping an object.");
 
-            //if (!overlapsSomething)
+            if (!overlapsSomething)
             {
                 var newBaseComponent = Instantiate(
                     item.VehicleAttachment, 
@@ -298,7 +298,7 @@ public class VehicleBuilder : MonoBehaviour
             }
         }
         
-        _vehicleClearanceVolumes = _vehicleBase.GetComponentsInChildren<ClearanceVolume>();
+        _vehicleClearanceVolumes = _vehicleBase.GetComponentsInChildren<IClearanceVolume>();
         
         Destroy(_ghostObject.gameObject);
         Destroy(_dragObject.gameObject);
