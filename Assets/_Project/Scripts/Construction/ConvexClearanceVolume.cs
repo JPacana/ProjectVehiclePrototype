@@ -34,9 +34,6 @@ public class ConvexClearanceVolume : MonoBehaviour, IClearanceVolume
         // First get all nearby colliders...
         Bounds bounds = _collider.bounds;
         
-        Debug.Log($"Bounds center: {bounds.center}");
-        Debug.Log($"Object center: {transform.position}");
-        
         // 1. Calculate the center in World Space
         //Vector3 worldCenter = _collider.transform.TransformPoint(bounds.center);
         Vector3 worldCenter = bounds.center;

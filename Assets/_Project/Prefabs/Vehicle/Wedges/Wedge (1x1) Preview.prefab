@@ -56,10 +56,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wedge (1x1) Preview
       objectReference: {fileID: 0}
+    - target: {fileID: 8027220359388710457, guid: d9dbf53c6467caf4f931f3c2a32f74f9, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9468d0a7e4c0c444fa4cd1a6902e8aa9, type: 2}
+    - target: {fileID: 8589925849385918938, guid: d9dbf53c6467caf4f931f3c2a32f74f9, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9468d0a7e4c0c444fa4cd1a6902e8aa9, type: 2}
+    - target: {fileID: 8965583520419986488, guid: d9dbf53c6467caf4f931f3c2a32f74f9, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 9468d0a7e4c0c444fa4cd1a6902e8aa9, type: 2}
     m_RemovedComponents:
     - {fileID: 6021082283253391189, guid: d9dbf53c6467caf4f931f3c2a32f74f9, type: 3}
-    - {fileID: 228430645867369245, guid: d9dbf53c6467caf4f931f3c2a32f74f9, type: 3}
-    - {fileID: 1453759795208580608, guid: d9dbf53c6467caf4f931f3c2a32f74f9, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -95,15 +95,15 @@ public class VehicleBuilder : MonoBehaviour
     private IClearanceVolume[] _ghostClearanceVolumes;
     private BuildSocket[] _dragSockets;
     private IClearanceVolume[] _dragClearanceVolumes;
-    public void StartPreview(InventoryItemSO item, Vector2 mousePosition)
+    private InventoryItemSO _currentItem;
+    private Vector2 _lastMousePosition;
+    public void StartPreview(InventoryItemSO item, bool flipped = false)
     {
+        _currentItem = item;
+        
         if (!_dragObject) _dragObject = Instantiate(item.VehicleAttachmentDrag);
         _dragSockets = _dragObject.GetComponentsInChildren<BuildSocket>();
         _dragClearanceVolumes = _dragObject.GetComponentsInChildren<IClearanceVolume>();
-
-        // TODO: Remove this test
-        // This test is to see how rotating the _dragObject can work
-        // _dragObject.transform.rotation = Quaternion.AngleAxis(45f, _dragObject.transform.up);
         
         if (!_ghostObject) _ghostObject = Instantiate(item.VehicleAttachmentPreview);
         _ghostSockets = _ghostObject.GetComponentsInChildren<BuildSocket>();
@@ -112,6 +112,8 @@ public class VehicleBuilder : MonoBehaviour
     
     public void UpdatePreview(InventoryItemSO item, Vector2 mousePosition)
     {
+        _lastMousePosition = mousePosition;
+        
         // Raycast from the camera to the mouse position
         Ray ray = _buildCamera.ScreenPointToRay(mousePosition);
         RaycastHit hit;
@@ -124,10 +126,11 @@ public class VehicleBuilder : MonoBehaviour
         if (!_vehicleBase.RootComponent)
         {
             _ghostObject.transform.position = _vehicleBase.transform.position;
+            _ghostObject.transform.rotation = _dragObject.transform.rotation;
         }
         else
         {
-            _ghostObject.transform.rotation = Quaternion.identity;
+            //_ghostObject.transform.rotation = Quaternion.identity;
             //_dragObject.transform.rotation = Quaternion.identity;
             
             if (validMouseHit)
@@ -165,7 +168,7 @@ public class VehicleBuilder : MonoBehaviour
                 }
                 else
                 {
-                    _ghostObject.transform.position = hit.point;
+                    _ghostObject.transform.SetPositionAndRotation(_dragObject.transform.position, _dragObject.transform.rotation);
                 }
             }
 
@@ -265,7 +268,11 @@ public class VehicleBuilder : MonoBehaviour
         if (!_vehicleBase.RootComponent)
         {
             var spawnPosition = _vehicleBase.transform.position;
-            var newBaseComponent = Instantiate(item.VehicleAttachment, spawnPosition, Quaternion.identity, _vehicleBase.transform).GetComponent<VehicleComponent>();
+            var newBaseComponent = Instantiate(item.VehicleAttachment, spawnPosition, _dragObject.transform.rotation, _vehicleBase.transform).GetComponent<VehicleComponent>();
+            
+            if (_dragObject.GetComponent<VehicleComponent>().IsFlipped)
+                newBaseComponent.Flip();
+            
             _vehicleBase.SetRootComponent(newBaseComponent);
         }
         else
@@ -295,6 +302,9 @@ public class VehicleBuilder : MonoBehaviour
                     _ghostObject.transform.position, 
                     _ghostObject.transform.rotation, 
                     _vehicleBase.transform).GetComponent<VehicleComponent>();
+                
+                if (_dragObject.GetComponent<VehicleComponent>().IsFlipped)
+                    newBaseComponent.Flip();
             }
         }
         
@@ -320,11 +330,50 @@ public class VehicleBuilder : MonoBehaviour
     }
     
     // Build Controls
-    private float _rotationAmount = 45f;
+    private const float _rotationAmount = 45f;
     public void Rotate(float direction)
     {
-        if (_dragObject != null)
-            _dragObject.transform.Rotate(_dragObject.transform.up, direction * _rotationAmount);
-             //_dragObject.transform.rotation = Quaternion.AngleAxis(_rotationAmount * direction, _dragObject.transform.up);
+        var rotated = _dragObject.GetComponent<VehicleComponent>().Rotate(direction * _rotationAmount);
+        
+        UpdatePreview(null, _lastMousePosition);
+        
+        Debug.Log($"Rotation successful: {rotated}");
+        
+        //if (_dragObject != null)
+        //    _dragObject.transform.Rotate(_dragObject.transform.up, direction * _rotationAmount);
+    }
+
+    private bool _flipped = false;
+    public void Flip()
+    {
+        if (_dragObject == null) return;
+        
+        Debug.Log("TODO: Figure out a good way to flip a component.");
+
+        if (_currentItem == null) return;
+        
+        _dragObject.GetComponent<VehicleComponent>().Flip();
+        _ghostObject.GetComponent<VehicleComponent>().Flip();
+        
+        _dragSockets = _dragObject.GetComponentsInChildren<BuildSocket>();
+        _dragClearanceVolumes = _dragObject.GetComponentsInChildren<IClearanceVolume>();
+        
+        UpdatePreview(null, _lastMousePosition);
+        
+        //_flipped = !_flipped;
+        //
+        //Destroy(_dragObject);
+        //_dragObject = null;
+        //
+        //Destroy(_ghostObject);
+        //_ghostObject = null;
+
+        //StartPreview(_currentItem, _flipped);
+
+        //_dragObject.transform.Rotate(_dragObject.transform.forward, 180f);
+
+        //var currentScale = _dragObject.transform.localScale;
+        //_dragObject.transform.localScale = new Vector3(-1f * currentScale.x, 1f * currentScale.y, 1f * currentScale.z);
+        //_ghostObject.transform.localScale = _dragObject.transform.localScale;
     }
 }

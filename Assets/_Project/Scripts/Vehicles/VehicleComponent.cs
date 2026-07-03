@@ -1,41 +1,56 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
 public class VehicleComponent : MonoBehaviour
 {
-    [SerializeField] private List<AttachmentSocket> _sockets;
-    public List<AttachmentSocket> Sockets => _sockets;
-    
-    private Dictionary<AttachmentSocket, AttachmentSocket> _socketConnections = new();
+    [SerializeField] private bool _flippable;
+    public bool IsFlippable => _flippable;
 
+    private bool _flipped;
+    public bool IsFlipped => _flipped;
+    
+    [SerializeField] private bool _rotatable;
+    public bool IsRotatable => _rotatable;
+
+    [SerializeField] private Transform _layout1;
+    [SerializeField] private Transform _layout2;
+    
     void Awake()
     {
-        foreach (var socket in _sockets)
+        if (_layout1 == null)
         {
-            _socketConnections.Add(socket, null);
+            Debug.LogWarning($"VehicleComponent {name} has no _layout1 set.");
+            return;
         }
-    }
-    
-    public List<AttachmentSocket> AvailableSockets 
-    {
-        get
+        
+        if (_flippable && _layout2 == null)
         {
-            // Get all sockets that are available with nothing connected to them
-            var availableSockets = _socketConnections.Where(pair => !pair.Value)
-                .Select(pair => pair.Key)
-                .ToList();
-            return availableSockets;
+            Debug.LogWarning($"Flippable VehicleComponent {name} has no _layout2 set.");
+            _flippable = false;
         }
+        _layout1.gameObject.SetActive(true);
+        if (_flippable) _layout2.gameObject.SetActive(false);
     }
 
-    public bool AttachSockets(AttachmentSocket parentSocket, AttachmentSocket childSocket)
+    public bool Flip()
     {
-        if (AvailableSockets.Contains(parentSocket))
-        {
-            _socketConnections[parentSocket] = childSocket;
-            return true;
-        }
-        return false;
+        if (!_flippable) return false;
+        
+        _flipped = !_flipped;
+
+        _layout1.gameObject.SetActive(!_flipped);
+        _layout2.gameObject.SetActive(_flipped);
+        
+        return true;
+    }
+
+    public bool Rotate(float degrees)
+    {
+        if (_rotatable)
+            transform.Rotate(transform.up, degrees);
+        
+        return _rotatable;
     }
 }

@@ -48,8 +48,8 @@ public class InventoryPanel : MonoBehaviour
         //    _builder.StartPreview(obj, spawnPosition);
         //}
         // Raycast from the camera to the mouse position
-        
-        _builder.StartPreview(obj, eventData.position);
+
+        _builder.StartPreview(obj, false);
     }
 
     private void OnDrag(PointerEventData eventData, InventoryItemSO obj)
