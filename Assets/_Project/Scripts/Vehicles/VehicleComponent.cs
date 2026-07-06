@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class VehicleComponent : MonoBehaviour
+public class VehicleComponent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private bool _flippable;
     public bool IsFlippable => _flippable;
@@ -16,6 +18,12 @@ public class VehicleComponent : MonoBehaviour
 
     [SerializeField] private Transform _layout1;
     [SerializeField] private Transform _layout2;
+    
+    public InventoryItemSO Item { get; set; }
+    
+    public event Action<PointerEventData, VehicleComponent> BeginDrag;
+    public event Action<PointerEventData, VehicleComponent> Drag;
+    public event Action<PointerEventData, VehicleComponent> EndDrag;
     
     void Awake()
     {
@@ -52,5 +60,20 @@ public class VehicleComponent : MonoBehaviour
             transform.Rotate(transform.up, degrees);
         
         return _rotatable;
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        BeginDrag?.Invoke(eventData, this);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        Drag?.Invoke(eventData, this);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        EndDrag?.Invoke(eventData, this);
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 
 public class VehicleBuilder : MonoBehaviour
@@ -265,10 +266,69 @@ public class VehicleBuilder : MonoBehaviour
     private IClearanceVolume[] _vehicleClearanceVolumes;
     public void EndPreview(InventoryItemSO item, Vector3 position)
     {
+        ConstructVehicleComponent(item);
+        //if (!_vehicleBase.RootComponent)
+        //{
+        //    var spawnPosition = _vehicleBase.transform.position;
+        //    var newBaseComponent = Instantiate(item.VehicleAttachment, spawnPosition, _dragObject.transform.rotation, _vehicleBase.transform).GetComponent<VehicleComponent>();
+        //    
+        //    if (_dragObject.GetComponent<VehicleComponent>().IsFlipped)
+        //        newBaseComponent.Flip();
+        //    
+        //    _vehicleBase.SetRootComponent(newBaseComponent);
+        //}
+        //else
+        //{
+        //    // Check for clearances
+        //    bool overlapsSomething = false;
+        //    for (int i = 0; i < _ghostClearanceVolumes.Length; i++)
+        //    {
+        //        var overlappedClearanceVolumes = _ghostClearanceVolumes[i].GetOverlappedClearanceVolumes();
+        //        
+        //        // Eliminate any detected collisions that occur with the _dragObject since we don't care about those
+        //        //var filteredOverlappedClearanceVolumes = overlappedClearanceVolumes.Where(c => !c.transform.IsChildOf(_dragObject.transform)).ToArray();
+        //        
+        //        //if (filteredOverlappedClearanceVolumes.Length > 0) overlapsSomething = true;
+        //        if (overlappedClearanceVolumes.Length > 0) overlapsSomething = true;
+        //        foreach (var overlappedClearanceVolume in overlappedClearanceVolumes)
+        //        {
+        //            Debug.Log($"Ghost Clearance Volume {i} is overlapping {overlappedClearanceVolume.name}");
+        //        }
+        //    }
+        //    //if (overlapsSomething) Debug.Log("EndPreview: Ghost is overlapping an object.");
+
+        //    if (!overlapsSomething)
+        //    {
+        //        var newBaseComponent = Instantiate(
+        //            item.VehicleAttachment, 
+        //            _ghostObject.transform.position, 
+        //            _ghostObject.transform.rotation, 
+        //            _vehicleBase.transform).GetComponent<VehicleComponent>();
+        //        
+        //        if (_dragObject.GetComponent<VehicleComponent>().IsFlipped)
+        //            newBaseComponent.Flip();
+
+        //        var vc = newBaseComponent.GetComponent<VehicleComponent>();
+        //        
+        //        vc.BeginDrag += VehicleComponent_OnBeginDrag;
+        //        vc.Drag += VehicleComponent_OnDrag;
+        //        vc.EndDrag += VehicleComponent_OnEndDrag;
+        //    }
+        //}
+        //
+        //_vehicleClearanceVolumes = _vehicleBase.GetComponentsInChildren<IClearanceVolume>();
+        
+        Destroy(_ghostObject.gameObject);
+        Destroy(_dragObject.gameObject);
+    }
+
+    public void ConstructVehicleComponent(InventoryItemSO item)
+    {
         if (!_vehicleBase.RootComponent)
         {
             var spawnPosition = _vehicleBase.transform.position;
             var newBaseComponent = Instantiate(item.VehicleAttachment, spawnPosition, _dragObject.transform.rotation, _vehicleBase.transform).GetComponent<VehicleComponent>();
+            newBaseComponent.Item = item;
             
             if (_dragObject.GetComponent<VehicleComponent>().IsFlipped)
                 newBaseComponent.Flip();
@@ -303,17 +363,70 @@ public class VehicleBuilder : MonoBehaviour
                     _ghostObject.transform.rotation, 
                     _vehicleBase.transform).GetComponent<VehicleComponent>();
                 
+                newBaseComponent.Item = item;
+                
                 if (_dragObject.GetComponent<VehicleComponent>().IsFlipped)
                     newBaseComponent.Flip();
+
+                var vc = newBaseComponent.GetComponent<VehicleComponent>();
+                
+                vc.BeginDrag += VehicleComponent_OnBeginDrag;
+                vc.Drag += VehicleComponent_OnDrag;
+                vc.EndDrag += VehicleComponent_OnEndDrag;
             }
         }
         
         _vehicleClearanceVolumes = _vehicleBase.GetComponentsInChildren<IClearanceVolume>();
+    }
+
+    public void MoveVehicleComponent(VehicleComponent vehicleComponent)
+    {
+        // Check for clearances
+        bool overlapsSomething = false;
+        for (int i = 0; i < _ghostClearanceVolumes.Length; i++)
+        {
+            var overlappedClearanceVolumes = _ghostClearanceVolumes[i].GetOverlappedClearanceVolumes();
+                
+            // Eliminate any detected collisions that occur with the _dragObject since we don't care about those
+            //var filteredOverlappedClearanceVolumes = overlappedClearanceVolumes.Where(c => !c.transform.IsChildOf(_dragObject.transform)).ToArray();
+                
+            //if (filteredOverlappedClearanceVolumes.Length > 0) overlapsSomething = true;
+            if (overlappedClearanceVolumes.Length > 0) overlapsSomething = true;
+            foreach (var overlappedClearanceVolume in overlappedClearanceVolumes)
+            {
+                Debug.Log($"Ghost Clearance Volume {i} is overlapping {overlappedClearanceVolume.name}");
+            }
+        }
+
+        if (!overlapsSomething)
+        {
+            vehicleComponent.transform.SetPositionAndRotation(_ghostObject.transform.position, _ghostObject.transform.rotation);
+                
+            if (_dragObject.GetComponent<VehicleComponent>().IsFlipped)
+                vehicleComponent.Flip();
+        }
+        
+        _vehicleClearanceVolumes = _vehicleBase.GetComponentsInChildren<IClearanceVolume>();
+    }
+
+    private void VehicleComponent_OnBeginDrag(PointerEventData arg1, VehicleComponent vehicleComponent)
+    {
+        StartPreview(vehicleComponent.Item);
+    }
+
+    private void VehicleComponent_OnDrag(PointerEventData arg1, VehicleComponent vehicleComponent)
+    {
+        UpdatePreview(vehicleComponent.Item, arg1.position);
+    }
+
+    private void VehicleComponent_OnEndDrag(PointerEventData arg1, VehicleComponent vehicleComponent)
+    {
+        MoveVehicleComponent(vehicleComponent);
         
         Destroy(_ghostObject.gameObject);
         Destroy(_dragObject.gameObject);
     }
-    
+
     private AttachmentSocket FindClosestAttachmentSocketToPosition(Vector3 position, List<AttachmentSocket> sockets)
     {
         AttachmentSocket closestAttachmentSocket = null;

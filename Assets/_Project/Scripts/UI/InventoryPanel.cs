@@ -28,7 +28,7 @@ public class InventoryPanel : MonoBehaviour
              
             uiInventoryItem.Image.sprite = inventoryItem.Sprite;
             
-            uiInventoryItem.Item = inventoryItem;
+            uiInventoryItem.Item.Item = inventoryItem;
             
             uiInventoryItem.Drag += OnDrag;
             uiInventoryItem.BeginDrag += OnBeginDrag;
